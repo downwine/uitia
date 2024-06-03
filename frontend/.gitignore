@@ -1,0 +1,17 @@
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# Idea files
+.idea
+.vscode
+
+# production
+/build
+/dist
+/storybook-static
+.parcel-cache
