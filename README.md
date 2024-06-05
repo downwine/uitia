@@ -11,7 +11,7 @@
     ```
 * Склонировать репозиторий
     ```bash
-    git clone https://github.com/Zayac11/antique-shop
+    git clone https://github.com/downwine/uitia
     ```
 * Открыть папку в vscode или другом редакторе
 
@@ -25,7 +25,7 @@
     
 * Загрузить дамп БД (Для Windows PowerShell)
     ```bash
-    Get-Content .\dump.sql | docker exec -i uitiaa psql -U admin uitia
+    Get-Content .\dump.sql | docker exec -i uitia psql -U admin uitia
     ```
     
 * Загрузить дамп БД (Для других ОС)
