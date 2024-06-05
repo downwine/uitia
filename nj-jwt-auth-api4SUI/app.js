@@ -9,12 +9,10 @@ const pool = new Pool({
 
 const express = require('express'),
   app = express(),
-  // app1 = express(),
   jwt = require('jsonwebtoken') // , users = require('./users')
 
 const host = '127.0.0.1' // localhost
 const port = 8000 // for queries from the clients
-// const port1 = 7001
 const tokenKey = 'ba21-dc43-fe65-hg87' // some secret salt
 
 const cors = require('cors')
@@ -46,7 +44,6 @@ async function getCurrentUserFromDB(username) {
 }
 
 app.use(express.json())
-// app1.use(express.json())
 
 ///////////////////////////////////////////////////////////////////////////
 //                                                                       //
@@ -60,7 +57,6 @@ async function getCurrentUserFromDBById(id) {
   const user = await pool.query('SELECT * FROM person WHERE id = $1', [id])
   // console.log('getCurrentUserFromDBById', user.rows[0])
   return user.rows[0] ?? undefined
- 
 }
 
 app.use('/api/auth/', (req, res, next) => {
@@ -445,11 +441,10 @@ app.delete('/api/auth/todo/delete/:todo_id', (req, res) => { // Удаление
 
 
 //////////////////////////////////////////////////////////
-app.put('/api/auth/todo/complete/:todo_id', (req, res) => { // Изменение todo записи
+app.put('/api/auth/todo/complete/:todo_id', (req, res) => { // Выполнение todo записи
   const body = req.body
   const { todo_id } = req.params;
   console.log('complete todo')
-  console.log(body)
 
   if (!todo_id || body === '{}') {
     mes = "No content."
@@ -477,21 +472,39 @@ app.put('/api/auth/todo/complete/:todo_id', (req, res) => { // Изменени�
 })
 
 
+//////////////////////////////////////////////////////////
+app.put('/api/auth/todo/change/:todo_id', (req, res) => { // Изменение todo записи
+  const body = req.body
+  const { todo_id } = req.params;
+  console.log('change todo name')
+
+  if (!todo_id || body === '{}') {
+    mes = "No content."
+    console.log(mes)
+    return res.status(204).json({id: -1, token: mes})
+  }
+
+  if (typeof body.name === 'undefined') {
+    mes = "Precondition Failed."
+    console.log(mes)
+    return res.status(412).json({id: -1, token: mes})
+  }
+  if(req.user) {
+    pool.query('UPDATE todo SET name = $1 WHERE id = $2 AND user_id = $3', [body.name, Number(todo_id), req.user.id])
+    .then((response) => {
+      res.status(200).json({todo_id: todo_id, name: body.name})
+    })
+  }
+  else {
+    mes = "A user with this name and password could not be found."
+    console.log(mes)
+    return res.status(404).json({id: -1, token: mes}) // 401 Unauthorized
+  }
+  
+})
+
+
 app.listen(port, host, () =>
   console.log(`Server listens http://${host}:${port}`)
 )
 
-
-// app1.get('/', (req, res) => {
-//   // console.log(req)
-//   return res.status(401).json(
-//     {
-//       id: 0,
-//       token: "app1"
-//     })
-// })
-
-
-// app1.listen(port1, host, () =>
-//   console.log(`Server1 listens http://${host}:${port}`)
-// )

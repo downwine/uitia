@@ -38,11 +38,13 @@ export const RegisterPage = () => {
   const handleShowClick = () => setShowPassword(!showPassword);
   const handleShowSecret = () => setShowSecretResponse(!showSecretResponse);
 
+  // функция регистрации пользователя на сервере
   const [doRegister] = authAPI.useRegisterMutation()
 
   const handleSubmit = (e) => {
     e.preventDefault ()
     if(username && password && email && secretResponse) {
+      // отправка username, email, password, secretResponse
       doRegister({username, email, password, secretResponse})
         .then((result) => {
           console.log(result)

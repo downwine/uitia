@@ -35,11 +35,13 @@ export const ResetPasswordPage = () => {
   const handleShowClick = () => setShowPassword(!showPassword);
   const handleShowSecret = () => setShowSecretResponse(!showSecretResponse);
 
+  // функция смены пароля на сервере
   const [doResetPassword] = userAPI.useResetPasswordMutation()
 
   const handleSubmit = (e) => {
     e.preventDefault ()
     if(username && password && email && secretResponse) {
+      // отправка username, email, password, secretResponse
       doResetPassword({username, email, password, secretResponse})
         .then((result) => {
           console.log(result)

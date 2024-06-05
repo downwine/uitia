@@ -33,6 +33,7 @@ export const LoginPage = () => {
   const [password, setPassword] = useState('')
   const handleShowClick = () => setShowPassword(!showPassword);
 
+  // функция авторизации на сервере
   const [doLogin] = authAPI.useLoginMutation()
 
   const handleLogin = (e) => {

@@ -1,21 +1,20 @@
 import {
   Box,
   Button,
-  Checkbox,
   Container,
-  Input,
-  Text
+  Input
 } from '@chakra-ui/react';
 
 import React, { useState } from 'react';
 import { todoAPI } from '../../service/TodoService';
+import { TodoItem } from './TodoItem';
 
 export const TodoPage = () => {
+  // функция добавления заметки на сервере
   const [addTodo, {isLoading: addLoading }] = todoAPI.useAddTodoMutation()
-  const [deleteTodo, {isLoading: deleteLoading }] = todoAPI.useDeleteTodoMutation()
-  const [completeTodo, {isLoading: completeLoading }] = todoAPI.useCompleteTodoMutation()
+  // получение заметок пользователя с сервера
   const {data: todos, isFetching, error} = todoAPI.useGetTodoQuery(undefined, {
-    refetchOnMountOrArgChange: true
+    refetchOnMountOrArgChange: true // обновлять данные при каждом заходе на страницу
   })
   const [todoInput, setTodoInput] = useState('');
 
@@ -34,13 +33,6 @@ export const TodoPage = () => {
     }
   };
 
-  const handleToggleTodo = (id, is_done) => {
-    completeTodo({id: id, is_done: !is_done})
-  };
-
-  const handleDeleteTodo = (id) => {
-    deleteTodo(id)
-  };
 
   return (
     <Container maxW='992px'>
@@ -59,31 +51,9 @@ export const TodoPage = () => {
           Добавить
         </Button>
       </Box>
-      {(isFetching || addLoading || deleteLoading || completeLoading) && <div>Загрузка...</div>}
-      {(todos && todos.length) ? todos.map((todo, index) => (
-        <Box key={todo.id} width="100%" border="1px solid #ccc" borderRadius="md" marginBottom={2} background={'white'}>
-          <Box display="flex" alignItems="center" p={2} >
-            <Checkbox
-              isChecked={todo.is_done}
-              onChange={() => handleToggleTodo(todo.id, todo.is_done)}
-              marginRight={2}
-            />
-            <Text
-              textDecoration={todo.is_done ? 'line-through' : 'none'}
-              flex="1"
-            >
-              {todo.name}
-            </Text>
-            <Button
-              colorScheme="red"
-              onClick={() => handleDeleteTodo(todo.id)}
-              aria-label="Удалить задачу"
-              size="sm"
-            >
-              Удалить
-            </Button>
-          </Box>
-        </Box>
+      {(isFetching || addLoading) && <div>Загрузка...</div>}
+      {(todos && todos.length) ? todos.map((todo) => (
+        <TodoItem key={todo.id} todo={todo} />
       ))
       : <div>Нет данных</div>
     } 
